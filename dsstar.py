@@ -658,6 +658,20 @@ class DS_STAR_Agent:
             "output_file": str(output_file),
             "total_steps": len(self.storage.list_steps())
         }
+
+    def get_total_token_usage(self) -> Dict[str, int]:
+        """Aggregates token usage from all providers."""
+        total_input = 0
+        total_output = 0
+        for provider in self.providers.values():
+            total_input += provider.input_tokens
+            total_output += provider.output_tokens
+        return {
+            "input_tokens": total_input,
+            "output_tokens": total_output,
+            "total_tokens": total_input + total_output
+        }
+
 # =============================================================================
 # CLI & USAGE
 # =============================================================================
@@ -719,10 +733,13 @@ def main():
     result = agent.run_pipeline(args.query, args.data_files)
     end_time = datetime.now()
     duration = end_time - start_time
+    
+    token_usage = agent.get_total_token_usage()
 
     print(f"\n{'='*60}")
     print(f"RUN COMPLETED: {result['run_id']}")
     print(f"TOTAL TIME: {duration}")
+    print(f"TOKEN USAGE: Input: {token_usage['input_tokens']}, Output: {token_usage['output_tokens']}, Total: {token_usage['total_tokens']}")
     print(f"OUTPUT: {result['output_file']}")
     print(f"FINAL RESULT:\n{result['final_result']}")
     print(f"{'='*60}")
