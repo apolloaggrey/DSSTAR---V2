@@ -1,0 +1,5 @@
+interactive: false
+max_refinement_rounds: 1
+model_name: gpt-5
+preserve_artifacts: true
+run_id: run_20251129_090640_cf4c5c
